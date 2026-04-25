@@ -1,0 +1,76 @@
+{% extends "shop/base.html" %}
+{% block title %}الرئيسية - بداية ستور - مكتبة وفراخ وأعلاف{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container hero-inner">
+        <h1>مرحباً بك في بداية ستور</h1>
+        <p>متجرك الشامل للأدوات المكتبية والدواجن الطازجة والأعلاف بأفضل الأسعار</p>
+        <div class="hero-actions">
+            <!-- Order tracking link might require ID, we just point to a placeholder or keep it simple -->
+            <a href="#" class="btn-outline-white">تتبع طلبك</a>
+            <a href="{{ url_for('shop_products') }}" class="btn-cyan">تصفح المنتجات</a>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">أقسامنا</h2>
+
+        <div class="category-grid">
+            {% set cat_details = {
+                'stationery': {'emoji': '📚', 'desc': 'أدوات مكتبية ومدرسية ومستحضرات تجميل'},
+                'chicken': {'emoji': '🍗', 'desc': 'دواجن طازجة ومجمدة بأعلى جودة'},
+                'feeds': {'emoji': '🌾', 'desc': 'أعلاف دواجن ومواشي بأفضل الأسعار'}
+            } %}
+
+            {% for category in categories %}
+                {% set details = cat_details.get(category.slug, {'emoji': '📦', 'desc': 'تسوق أحدث المنتجات في هذا القسم'}) %}
+                <a class="category-card" href="{{ url_for('shop_products', category=category.slug) }}">
+                    <div class="cat-emoji">{{ details.emoji }}</div>
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ details.desc }}</p>
+                </a>
+            {% else %}
+                <div class="category-card" style="grid-column: 1 / -1;">
+                    <div class="cat-emoji">⏳</div>
+                    <h3>لا توجد أقسام بعد</h3>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="section" style="background: white;">
+    <div class="container">
+        <h2 class="section-title">منتجات مميزة</h2>
+
+        <div class="product-grid">
+            {% for product in featured_products %}
+            <div class="product-card">
+                <a href="{{ url_for('shop_product_detail', slug=product.slug) }}" class="product-img-box">
+                    <img src="{{ product.image_url or 'https://via.placeholder.com/300x220?text=Product' }}" alt="{{ product.title }}">
+                </a>
+                <div class="product-body">
+                    <h3>{{ product.title }}</h3>
+                    <div class="product-category">{{ product.category.name if product.category else 'أدوات أخرى' }}</div>
+                    <div class="product-price">{{ product.item.sale_price }} جنيه</div>
+                    
+                    <form method="POST" action="/cart/add/{{ product.id }}">
+                        <button type="submit" class="btn-gradient">أضف للسلة 🛒</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; color: #6b7280; padding: 40px;">لا توجد منتجات مميزة بعد</div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

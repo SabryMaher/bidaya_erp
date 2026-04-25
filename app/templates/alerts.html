@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-head">
+        <h2>التنبيهات الذكية</h2>
+    </div>
+
+    <div class="analytics-row two-cols">
+        <div class="analytics-box">
+            <h3>أصناف منخفضة المخزون</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>الصنف</th>
+                        <th>الكمية الحالية</th>
+                        <th>حد إعادة الطلب</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in alerts.low_stock %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.reorder_level }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3">لا توجد تنبيهات مخزون</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="analytics-box">
+            <h3>منتجات راكدة</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>الصنف</th>
+                        <th>المخزون الحالي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in alerts.stagnant %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="2">لا توجد منتجات راكدة</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

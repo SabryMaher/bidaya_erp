@@ -1,0 +1,37 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<section class="success-page">
+    <div class="success-card">
+        <div class="success-icon-wrap">
+            <div class="success-icon">✓</div>
+        </div>
+
+        <h1 class="success-title">تم إرسال الطلب بنجاح 🎉</h1>
+        <p class="success-subtitle">سيتم التواصل معك لتأكيد الطلب</p>
+
+        <div class="order-code-box">
+            <div class="order-code-label">رقم الطلب</div>
+            <div class="order-code-value" id="order-number-text">{{ order.order_number }}</div>
+            <button type="button" class="copy-order-btn" onclick="copyOrderNumber()">نسخ</button>
+        </div>
+
+        <a href="{{ url_for('track_order', order_number=order.order_number) }}" class="gradient-action-btn">
+            تتبع الطلب
+        </a>
+
+        <a href="{{ url_for('home') }}" class="ghost-action-btn">
+            متابعة التسوق
+        </a>
+    </div>
+</section>
+
+<script>
+    function copyOrderNumber() {
+        const text = document.getElementById("order-number-text").innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("تم نسخ رقم الطلب");
+        });
+    }
+</script>
+{% endblock %}

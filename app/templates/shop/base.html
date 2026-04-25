@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}بداية ستور - مكتبة وفراخ وأعلاف{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='shop.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='shop_orders.css') }}">
+</head>
+<body>
+
+    <header class="shop-header">
+        <div class="container header-inner">
+            <!-- Right: Logo -->
+            <a href="{{ url_for('shop_home') }}" class="logo-box">
+                <div class="logo-icon">🏪</div>
+                <div class="logo-text">بداية ستور</div>
+            </a>
+
+            <!-- Middle: Navigation -->
+            <nav class="shop-nav">
+                <a href="{{ url_for('shop_home') }}" class="{% if request.endpoint == 'shop_home' %}active{% endif %}">الرئيسية</a>
+                <a href="{{ url_for('shop_products') }}" class="{% if request.endpoint == 'shop_products' and not request.args.get('category') %}active{% endif %}">المنتجات</a>
+                <a href="{{ url_for('shop_products', category='stationery') }}">المكتبة</a>
+                <a href="{{ url_for('shop_products', category='chicken') }}">الفراخ</a>
+                <a href="{{ url_for('shop_products', category='feeds') }}">الأعلاف</a>
+            </nav>
+
+            <!-- Left: Actions -->
+            <div class="header-actions">
+                <button class="action-btn" title="تغيير المظهر">☀️</button>
+                <button class="action-btn" onclick="toggleCart()" title="سلة التسوق">🛒</button>
+                
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="action-btn" title="لوحة التحكم">⚙️</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="shop-footer">
+        <div class="container">
+            <div class="logo-box">
+                <div class="logo-icon">🏪</div>
+                <div class="logo-text" style="font-size:18px;color:#1f2937;">بداية ستور</div>
+            </div>
+            <p style="margin:0;">© 2026 بداية ستور - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <!-- Slide-out Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>سلة التسوق</h2>
+            <button class="cart-close" onclick="toggleCart()">✖</button>
+        </div>
+        
+        <div class="cart-body">
+            {% set cart = session.get('cart', {}) %}
+            {% if cart %}
+                <!-- Note: Proper Cartesian data fetching requires context processor or route loading, 
+                     so for now we redirect immediately on complex items or keep it simple!
+                     Typically, we navigate to /cart if it's too complex or we build a template snippet. -->
+                <div style="text-align:center; margin-top:20px;">
+                    <a href="{{ url_for('view_cart') }}" class="btn-gradient">عرض السلة ({{ cart|length }} منتج)</a>
+                </div>
+            {% else %}
+                <div style="text-align:center; margin-top:40px; color:#6b7280;">السلة فارغة</div>
+            {% endif %}
+        </div>
+        
+        <div class="cart-footer">
+            <a href="{{ url_for('checkout') }}" class="btn-gradient">إتمام الطلب</a>
+        </div>
+    </aside>
+
+    <script>
+        function toggleCart() {
+            document.body.classList.toggle('cart-open');
+        }
+    </script>
+</body>
+</html>

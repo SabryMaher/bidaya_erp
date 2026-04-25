@@ -1,0 +1,81 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<section class="track-page">
+    <div class="track-page-head">
+        <h1>تتبع الطلب</h1>
+    </div>
+
+    <form method="GET" action="{{ url_for('track_order_search') }}" class="track-search-form">
+        <button class="track-search-btn" type="submit">⌕</button>
+        <input type="text" name="order_number" value="{{ searched_order_number or '' }}" placeholder="اكتب رقم الطلب"
+            class="track-search-input">
+    </form>
+
+    {% if order %}
+    <div class="track-status-card">
+        <h2>حالة الطلب</h2>
+
+        <div class="order-steps">
+            <div class="step-item">
+                <div
+                    class="step-circle {% if current_step == 1 %}active orange{% elif current_step > 1 %}done{% endif %}">
+                    1</div>
+                <div class="step-label">قيد الانتظار</div>
+            </div>
+
+            <div class="step-item">
+                <div
+                    class="step-circle {% if current_step == 2 %}active blue{% elif current_step > 2 %}done{% endif %}">
+                    2</div>
+                <div class="step-label">تم التأكيد</div>
+            </div>
+
+            <div class="step-item">
+                <div
+                    class="step-circle {% if current_step == 3 %}active blue{% elif current_step > 3 %}done{% endif %}">
+                    3</div>
+                <div class="step-label">قيد التوصيل</div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-circle {% if current_step == 4 %}active gray{% endif %}">4</div>
+                <div class="step-label">مكتمل</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="track-details-card">
+        <h2>تفاصيل الطلب</h2>
+
+        <div class="track-meta-grid">
+            <div class="meta-label">رقم الطلب</div>
+            <div class="meta-value">{{ order.order_number }}</div>
+
+            <div class="meta-label">التاريخ</div>
+            <div class="meta-value">{{ order.created_at.strftime('%Y/%m/%d') }}</div>
+        </div>
+
+        <div class="track-products-section">
+            <h3>المنتجات</h3>
+
+            {% for item in order.items %}
+            <div class="track-product-row">
+                <div class="track-product-name">{{ item.product.title }} × {{ item.quantity }}</div>
+                <div class="track-product-price">{{ item.price }} جنيه</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="track-total-row">
+            <span>الإجمالي</span>
+            <strong>{{ order.total_amount }} جنيه</strong>
+        </div>
+    </div>
+    {% elif searched_order_number %}
+    <div class="empty-track-state">
+        لم يتم العثور على طلب بهذا الرقم
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>إدارة المنتجات</h2>
+
+<table>
+    <tr>
+        <th>الاسم</th>
+        <th>صورة</th>
+        <th>تعديل</th>
+    </tr>
+
+    {% for p in products %}
+    <tr>
+        <td>{{ p.item.name }}</td>
+        <td>
+            <img src="{{ p.image_url }}" width="80">
+        </td>
+        <td>
+            <a href="/admin/products/edit/{{ p.id }}">تعديل</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

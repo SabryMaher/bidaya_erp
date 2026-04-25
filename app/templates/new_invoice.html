@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="form-card mx-auto" style="max-width: 800px;">
+    <h2 class="page-title text-center mb-4">إنشاء فاتورة بيع جديدة</h2>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.customer_name.label(class="form-label") }}
+            {{ form.customer_name(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.customer_phone.label(class="form-label") }}
+            {{ form.customer_phone(class="form-control") }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form.payment_method.label(class="form-label") }}
+                {{ form.payment_method(class="form-select") }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form.amount_paid.label(class="form-label") }}
+                {{ form.amount_paid(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form.notes.label(class="form-label") }}
+            {{ form.notes(class="form-control", rows="4") }}
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            إنشاء الفاتورة
+        </button>
+    </form>
+</div>
+{% endblock %}

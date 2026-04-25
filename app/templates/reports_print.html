@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>تقرير المبيعات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            color: #111827;
+        }
+
+        h1,
+        h2 {
+            margin: 0 0 16px;
+        }
+
+        .summary {
+            margin-bottom: 24px;
+        }
+
+        .summary p {
+            margin: 6px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        th,
+        td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        .print-btn {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: #111827;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        @media print {
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>تقرير المبيعات</h1>
+    <div class="summary">
+        <p><strong>من:</strong> {{ date_from or "البداية" }}</p>
+        <p><strong>إلى:</strong> {{ date_to or "الآن" }}</p>
+        <p><strong>إجمالي المبيعات:</strong> {{ total_sales }} جنيه</p>
+        <p><strong>صافي الربح:</strong> {{ total_profit }} جنيه</p>
+        <p><strong>عدد الفواتير:</strong> {{ total_invoices }}</p>
+        <p><strong>متوسط الفاتورة:</strong> {{ average_invoice }} جنيه</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>رقم الفاتورة</th>
+                <th>العميل</th>
+                <th>التاريخ</th>
+                <th>الإجمالي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inv in invoices %}
+            <tr>
+                <td>#{{ inv.id }}</td>
+                <td>{{ inv.customer_name }}</td>
+                <td>{{ inv.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ inv.total_amount or 0 }}</td>
+                <td>{{ inv.amount_paid or 0 }}</td>
+                <td>{{ (inv.total_amount or 0) - (inv.amount_paid or 0) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button class="print-btn" onclick="window.print()">طباعة</button>
+</body>
+
+</html>

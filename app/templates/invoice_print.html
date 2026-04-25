@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>فاتورة بيع #{{ invoice.id }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            color: #111827;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .invoice-box {
+            max-width: 900px;
+            margin: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            gap: 20px;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 10px;
+        }
+
+        .muted {
+            color: #6b7280;
+            margin: 4px 0;
+        }
+
+        .summary {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 16px 20px;
+            min-width: 240px;
+        }
+
+        .summary div {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        .footer {
+            margin-top: 24px;
+        }
+
+        .print-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background: #111827;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        @media print {
+            .print-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <div class="top">
+            <div>
+                <h1 class="title">فاتورة بيع #{{ invoice.id }}</h1>
+                <div class="muted">العميل: {{ invoice.customer_name }}</div>
+                <div class="muted">الهاتف: {{ invoice.customer_phone or "-" }}</div>
+                <div class="muted">التاريخ: {{ invoice.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                <div class="muted">طريقة الدفع: {{ invoice.payment_method }}</div>
+                <div class="muted">
+                    الحالة:
+                    {% if invoice.is_finalized %}
+                    <span class="status">منتهية</span>
+                    {% else %}
+                    مفتوحة
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="summary">
+                <div><strong>الإجمالي:</strong> {{ "%.2f"|format(invoice.total_amount or 0) }}</div>
+                <div><strong>المدفوع:</strong> {{ "%.2f"|format(invoice.amount_paid or 0) }}</div>
+                <div><strong>المتبقي:</strong> {{ "%.2f"|format(invoice.balance_due or 0) }}</div>
+                <div><strong>الحالة:</strong> {{ invoice.payment_status }}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>الصنف</th>
+                    <th>الكمية</th>
+                    <th>سعر الوحدة</th>
+                    <th>الإجمالي</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line in invoice.items %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ line.item.name }}</td>
+                    <td>{{ line.quantity }}</td>
+                    <td>{{ "%.2f"|format(line.sale_price or 0) }}</td>
+                    <td>{{ "%.2f"|format(line.line_total or 0) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if invoice.notes %}
+        <div class="footer">
+            <strong>ملاحظات:</strong>
+            <div class="muted">{{ invoice.notes }}</div>
+        </div>
+        {% endif %}
+
+        <button class="print-btn" onclick="window.print()">طباعة</button>
+    </div>
+</body>
+
+</html>

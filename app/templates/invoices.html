@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">فواتير البيع</h2>
+    <a href="{{ url_for('new_invoice') }}" class="btn btn-primary">فاتورة جديدة</a>
+</div>
+
+<div class="table-wrap">
+    <table class="table text-center align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>العميل</th>
+                <th>الهاتف</th>
+                <th>الإجمالي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+                <th>الحالة</th>
+                <th>التاريخ</th>
+                <th>عرض</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.id }}</td>
+                <td>{{ invoice.customer_name }}</td>
+                <td>{{ invoice.customer_phone or "-" }}</td>
+                <td>{{ "%.2f"|format(invoice.total_amount or 0) }}</td>
+                <td>{{ "%.2f"|format(invoice.amount_paid or 0) }}</td>
+                <td>{{ "%.2f"|format(invoice.balance_due or 0) }}</td>
+                <td>
+                    {% if invoice.is_finalized %}
+                    <span class="badge bg-success">منتهية</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">مفتوحة</span>
+                    {% endif %}
+                </td>
+                <td>{{ invoice.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('edit_invoice', invoice_id=invoice.id) }}" class="btn btn-sm btn-primary">
+                        فتح
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9">لا توجد فواتير بعد</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

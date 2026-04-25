@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-head">
+        <h2>التقارير</h2>
+    </div>
+
+    <form method="GET" class="filter-form">
+        <div>
+            <label>من تاريخ</label>
+            <input type="date" name="date_from" value="{{ date_from }}">
+        </div>
+
+        <div>
+            <label>إلى تاريخ</label>
+            <input type="date" name="date_to" value="{{ date_to }}">
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">تصفية</button>
+            <a href="{{ url_for('reports') }}" class="btn btn-secondary">إعادة ضبط</a>
+            <a href="{{ url_for('export_reports_csv', date_from=date_from, date_to=date_to) }}"
+                class="btn btn-success">تصدير CSV</a>
+            <a href="{{ url_for('print_reports', date_from=date_from, date_to=date_to) }}" target="_blank"
+                class="btn btn-dark">طباعة التقرير</a>
+        </div>
+    </form>
+
+    <div class="analytics-grid">
+        <div class="stat-card">
+            <div class="stat-label">إجمالي المبيعات</div>
+            <div class="stat-value">{{ total_sales }} جنيه</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">صافي الربح</div>
+            <div class="stat-value">{{ total_profit }} جنيه</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">عدد الفواتير</div>
+            <div class="stat-value">{{ total_invoices }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">متوسط الفاتورة</div>
+            <div class="stat-value">{{ average_invoice }} جنيه</div>
+        </div>
+    </div>
+
+    <div class="analytics-box">
+        <h3>تفاصيل الفواتير</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>رقم الفاتورة</th>
+                    <th>العميل</th>
+                    <th>التاريخ</th>
+                    <th>الإجمالي</th>
+                    <th>المدفوع</th>
+                    <th>المتبقي</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report_rows %}
+                <tr>
+                    <td>#{{ row.invoice_id }}</td>
+                    <td>{{ row.customer_name }}</td>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.total }}</td>
+                    <td>{{ row.paid }}</td>
+                    <td>{{ row.balance }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">لا توجد بيانات</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

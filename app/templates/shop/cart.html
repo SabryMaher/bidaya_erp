@@ -1,0 +1,48 @@
+{% extends "shop/base.html" %}
+{% block title %}السلة{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>سلة المشتريات</h2>
+        </div>
+
+        {% if products %}
+        <div class="table-wrap">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>الكمية</th>
+                        <th>الإجمالي</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in products %}
+                    <tr>
+                        <td>{{ row.product.item.name }}</td>
+                        <td>{{ row.qty }}</td>
+                        <td>{{ row.total }} جنيه</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('remove_from_cart', product_id=row.product.id) }}">
+                                <button type="submit" class="btn-danger">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="cart-total-box">
+            <h3>الإجمالي الكلي: {{ total }} جنيه</h3>
+            <a href="{{ url_for('checkout') }}" class="btn-primary">إتمام الطلب</a>
+        </div>
+        {% else %}
+        <div class="empty-box">السلة فارغة</div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

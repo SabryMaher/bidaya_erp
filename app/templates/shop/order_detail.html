@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-head">
+        <h2>تفاصيل الطلب #{{ order.id }}</h2>
+    </div>
+
+    <div class="mb-3">
+        <strong>اسم العميل:</strong> {{ order.customer_name }}<br>
+        <strong>رقم الهاتف:</strong> {{ order.customer_phone }}<br>
+        <strong>الحالة:</strong> {{ order.status }}<br>
+        <strong>الإجمالي:</strong> {{ order.total_amount }} جنيه
+    </div>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>السعر</th>
+                    <th>الإجمالي</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items %}
+                <tr>
+                    <td>{{ item.product.item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }} جنيه</td>
+                    <td>{{ item.quantity * item.price }} جنيه</td>
+                </tr>
+                {% endfor %}
+                {% if order.invoice_id %}
+                <div class="mb-3">
+                    <a href="{{ url_for('order_invoice', order_id=order.id) }}" class="btn btn-dark">
+                        عرض الفاتورة المرتبطة
+                    </a>
+                </div>
+                {% endif %}
+                <td class="actions-cell">
+                    <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-sm btn-primary">
+                        عرض
+                    </a>
+
+                    {% if order.invoice_id %}
+                    <a href="{{ url_for('order_invoice', order_id=order.id) }}" class="btn btn-sm btn-dark">
+                        عرض الفاتورة
+                    </a>
+                    {% endif %}
+
+                    {% if order.status != "completed" %}
+                    <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}"
+                        style="display:inline-block;">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            تنفيذ الطلب
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+                <td class="actions-cell">
+                    <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-sm btn-primary">
+                        عرض
+                    </a>
+
+                    {% if order.invoice_id %}
+                    <a href="{{ url_for('order_invoice', order_id=order.id) }}" class="btn btn-sm btn-dark">
+                        عرض الفاتورة
+                    </a>
+                    {% endif %}
+
+                    {% if order.status != "completed" %}
+                    <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}"
+                        style="display:inline-block;">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            تنفيذ الطلب
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tbody>
+        </table>
+    </div>
+
+    {% if order.status != "completed" %}
+    <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}">
+        <button type="submit" class="btn btn-success">تنفيذ الطلب</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

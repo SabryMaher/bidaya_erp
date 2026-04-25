@@ -1,0 +1,60 @@
+{% extends "shop/base.html" %}
+{% block title %}المنتجات - بداية ستور{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>كل المنتجات</h2>
+        </div>
+
+        <div class="shop-layout">
+
+            <aside class="filters-box">
+                <h3>الأقسام</h3>
+
+                <a class="filter-link {% if not current_category %}active{% endif %}"
+                    href="{{ url_for('shop_products', q=current_search) }}">
+                    الكل
+                </a>
+
+                {% for category in categories %}
+                <a class="filter-link {% if current_category == category.slug %}active{% endif %}"
+                    href="{{ url_for('shop_products', category=category.slug, q=current_search) }}">
+                    {{ category.name }}
+                </a>
+                {% endfor %}
+            </aside>
+
+            <div>
+                <div class="product-grid">
+                    {% for product in products %}
+                    <div class="product-card">
+                        <a href="{{ url_for('shop_product_detail', slug=product.slug) }}" class="product-img-box">
+                            <img src="{{ product.image_url or 'https://via.placeholder.com/300x220?text=Product' }}"
+                                alt="{{ product.item.name }}">
+                        </a>
+
+                        <div class="product-body">
+                            <h3>{{ product.item.name }}</h3>
+                            <p>{{ product.short_description or product.description or "لا يوجد وصف مختصر" }}</p>
+                            <div class="product-price">{{ product.item.sale_price }} جنيه</div>
+
+                            <form method="POST" action="/cart/add/{{ product.id }}">
+                                <button type="submit" class="btn-add">أضف للسلة 🛒</button>
+                            </form>
+
+                            <a href="{{ url_for('shop_product_detail', slug=product.slug) }}"
+                                class="btn-secondary mt-2">عرض المنتج</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-box">لا توجد نتائج</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

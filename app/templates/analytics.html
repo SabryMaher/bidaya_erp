@@ -1,0 +1,427 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-head">
+        <h2>لوحة تحليل البيانات</h2>
+    </div>
+
+    {% if alerts %}
+    <div class="alerts-box">
+        {% for alert in alerts %}
+        <div class="alert-chip">{{ alert }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="GET" class="filter-form">
+        <div>
+            <label>من تاريخ</label>
+            <input type="date" name="date_from" value="{{ date_from }}">
+        </div>
+
+        <div>
+            <label>إلى تاريخ</label>
+            <input type="date" name="date_to" value="{{ date_to }}">
+        </div>
+
+        <div>
+            <label>المخزن</label>
+            <select name="warehouse_id">
+                <option value="">الكل</option>
+                {% for warehouse in warehouses %}
+                <option value="{{ warehouse.id }}" {% if warehouse_id==warehouse.id|string %}selected{% endif %}>
+                    {{ warehouse.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label>القسم</label>
+            <select name="category">
+                <option value="">الكل</option>
+                {% for cat in categories %}
+                <option value="{{ cat }}" {% if category_filter==cat %}selected{% endif %}>
+                    {{ cat }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">تصفية</button>
+            <a href="{{ url_for('analytics') }}" class="btn btn-secondary">إعادة ضبط</a>
+            <a href="{{ url_for('analytics', date_from=date_from, date_to=date_to, warehouse_id=warehouse_id, category=category_filter, export='csv') }}"
+                class="btn btn-success">
+                تصدير CSV
+            </a>
+        </div>
+    </form>
+
+    <div class="analytics-grid">
+        <div class="stat-card">
+            <div class="stat-label">إجمالي المبيعات</div>
+            <div class="stat-value">{{ total_sales }} جنيه</div>
+            <div class="trend {% if sales_growth > 0 %}up{% elif sales_growth < 0 %}down{% endif %}">
+                {% if sales_growth > 0 %}
+                ↑ {{ sales_growth }}%
+                {% elif sales_growth < 0 %} ↓ {{ sales_growth }}% {% else %} ثابت {% endif %} </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">صافي الربح</div>
+                <div class="stat-value">{{ total_profit }} جنيه</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">عدد الفواتير</div>
+                <div class="stat-value">{{ total_invoices }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">عدد الطلبات</div>
+                <div class="stat-value">{{ total_orders }}</div>
+                <div class="trend {% if orders_growth > 0 %}up{% elif orders_growth < 0 %}down{% endif %}">
+                    {% if orders_growth > 0 %}
+                    ↑ {{ orders_growth }}%
+                    {% elif orders_growth < 0 %} ↓ {{ orders_growth }}% {% else %} ثابت {% endif %} </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">متوسط الفاتورة</div>
+                    <div class="stat-value">{{ average_invoice }} جنيه</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">توقع الشهر القادم</div>
+                    <div class="stat-value">{{ forecast_next_month }} جنيه</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">أصناف منخفضة المخزون</div>
+                    <div class="stat-value">{{ low_stock_count }}</div>
+                </div>
+            </div>
+
+            <div class="analytics-row two-cols">
+                <div class="analytics-box">
+                    <h3>مقارنة أسبوعية</h3>
+                    <div class="compare-box">
+                        <p><strong>هذا الأسبوع:</strong> {{ this_week_sales }} جنيه</p>
+                        <p><strong>الأسبوع السابق:</strong> {{ last_week_sales }} جنيه</p>
+                        <p>
+                            <strong>معدل التغير:</strong>
+                            {% if sales_growth > 0 %}
+                            <span class="text-success">+{{ sales_growth }}%</span>
+                            {% elif sales_growth < 0 %} <span class="text-danger">{{ sales_growth }}%</span>
+                                {% else %}
+                                <span>0%</span>
+                                {% endif %}
+                        </p>
+                        {% if best_day %}
+                        <p><strong>أفضل يوم بيع:</strong> {{ best_day.date }} — {{ best_day.total }} جنيه</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="analytics-row">
+                    <div class="analytics-box">
+                        <h3>المبيعات الشهرية آخر 6 شهور</h3>
+                        <canvas id="monthlySalesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analytics-box">
+                    <h3>المبيعات آخر 7 أيام</h3>
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <div class="analytics-row two-cols">
+                <div class="analytics-box">
+                    <h3>الأرباح آخر 7 أيام</h3>
+                    <canvas id="profitChart"></canvas>
+                </div>
+
+                <div class="analytics-row two-cols">
+                    <div class="analytics-box">
+                        <h3>اقتراحات إعادة الطلب</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>الصنف</th>
+                                    <th>الكمية الحالية</th>
+                                    <th>حد إعادة الطلب</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in reorder_suggestions %}
+                                <tr>
+                                    <td>{{ row.name }}</td>
+                                    <td>{{ row.qty }}</td>
+                                    <td>{{ row.reorder_level }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="3">لا توجد اقتراحات حالياً</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="analytics-box">
+                        <h3>هامش الربح حسب الأقسام</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>القسم</th>
+                                    <th>المبيعات</th>
+                                    <th>الربح</th>
+                                    <th>الهامش %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in category_sales %}
+                                <tr>
+                                    <td>{{ row.name }}</td>
+                                    <td>{{ row.total }}</td>
+                                    <td>{{ row.profit }}</td>
+                                    <td>{{ row.margin }}%</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4">لا توجد بيانات</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="analytics-box">
+                    <h3>تحليل حسب الأقسام</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>القسم</th>
+                                <th>المبيعات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in category_sales %}
+                            <tr>
+                                <td>{{ row.name }}</td>
+                                <td>{{ row.total }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2">لا توجد بيانات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="analytics-row two-cols">
+                <div class="analytics-box">
+                    <h3>أفضل 5 مخازن من حيث المبيعات</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>المخزن</th>
+                                <th>المبيعات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in warehouse_sales %}
+                            <tr>
+                                <td>{{ row.name }}</td>
+                                <td>{{ row.total }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2">لا توجد بيانات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analytics-box">
+                    <h3>أفضل 5 منتجات مبيعًا</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in top_products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.qty }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2">لا توجد بيانات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="analytics-row two-cols">
+                <div class="analytics-box">
+                    <h3>أفضل 5 عملاء</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>العميل</th>
+                                <th>إجمالي الشراء</th>
+                                <th>عدد الفواتير</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in top_customers %}
+                            <tr>
+                                <td>{{ customer.name }}</td>
+                                <td>{{ customer.spent }}</td>
+                                <td>{{ customer.count }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3">لا توجد بيانات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analytics-box">
+                    <h3>منتجات راكدة</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>المخزون الحالي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in stagnant_products %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.qty }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="2">لا توجد منتجات راكدة</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="analytics-row two-cols">
+                <div class="analytics-box">
+                    <h3>أحدث 5 فواتير</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>العميل</th>
+                                <th>الإجمالي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in recent_invoices %}
+                            <tr>
+                                <td>{{ invoice.id }}</td>
+                                <td>{{ invoice.customer_name }}</td>
+                                <td>{{ invoice.total_amount }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3">لا توجد فواتير</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analytics-box">
+                    <h3>أحدث 5 طلبات</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>العميل</th>
+                                <th>الهاتف</th>
+                                <th>الحالة</th>
+                                <th>الإجمالي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer_name }}</td>
+                                <td>{{ order.customer_phone }}</td>
+                                <td>{{ order.status }}</td>
+                                <td>{{ order.total_amount }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5">لا توجد طلبات</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            new Chart(document.getElementById('salesChart'), {
+                type: 'line',
+                data: {
+                    labels: {{ last_7_days| tojson }},
+                datasets: [{
+                    label: 'المبيعات',
+                    data: {{ sales_7_days| tojson }},
+                tension: 0.3
+        }]
+    },
+                options: { responsive: true }
+});
+
+            new Chart(document.getElementById('profitChart'), {
+                type: 'bar',
+                data: {
+                    labels: {{ last_7_days| tojson }},
+                datasets: [{
+                    label: 'الأرباح',
+                    data: {{ profit_7_days| tojson }}
+        }]
+    },
+                options: { responsive: true }
+});
+            new Chart(document.getElementById('monthlySalesChart'), {
+                type: 'bar',
+                data: {
+                    labels: {{ monthly_labels| tojson }},
+                datasets: [{
+                    label: 'المبيعات الشهرية',
+                    data: {{ monthly_sales| tojson }}
+        }]
+    },
+                options: { responsive: true }
+});
+        </script>
+        {% endblock %}

@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="invoice-page">
+
+    <div class="invoice-top">
+        <div>
+            <h2 class="page-title">فاتورة بيع رقم #{{ invoice.id }}</h2>
+
+            <p class="text-muted mb-1">العميل: {{ invoice.customer_name }}</p>
+            <p class="text-muted mb-1">الهاتف: {{ invoice.customer_phone or "-" }}</p>
+            <p class="text-muted mb-1">طريقة الدفع: {{ invoice.payment_method }}</p>
+            <p class="text-muted mb-1">
+                الحالة:
+                {% if invoice.is_finalized %}
+                <span class="badge bg-success">منتهية</span>
+                {% else %}
+                <span class="badge bg-warning text-dark">مفتوحة</span>
+                {% endif %}
+            </p>
+            <p class="text-muted mb-0">
+                التاريخ: {{ invoice.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </p>
+        </div>
+
+        <div class="invoice-total-box">
+            <div class="small text-white-50">إجمالي الفاتورة</div>
+            <div class="invoice-total">{{ "%.2f"|format(invoice.total_amount or 0) }}</div>
+            <div class="small mt-2">المدفوع: {{ "%.2f"|format(invoice.amount_paid or 0) }}</div>
+            <div class="small">المتبقي: {{ "%.2f"|format(invoice.balance_due or 0) }}</div>
+        </div>
+    </div>
+
+    <div class="mb-3 d-flex gap-2 flex-wrap">
+        <a href="{{ url_for('print_invoice', invoice_id=invoice.id) }}" target="_blank" class="btn btn-dark">
+            طباعة الفاتورة
+        </a>
+
+        {% if not invoice.is_finalized %}
+        <form method="POST" action="{{ url_for('finalize_invoice', invoice_id=invoice.id) }}">
+            <button type="submit" class="btn btn-success">
+                إنهاء الفاتورة
+            </button>
+        </form>
+        {% endif %}
+
+        <a href="{{ url_for('invoices') }}" class="btn btn-outline-primary">
+            رجوع
+        </a>
+    </div>
+
+    <div class="row g-4 mt-2">
+
+        <div class="col-lg-4">
+            <div class="form-card">
+                <h5 class="section-title">إضافة صنف</h5>
+
+                {% if invoice.is_finalized %}
+                <div class="alert alert-info mb-0">
+                    لا يمكن تعديل هذه الفاتورة لأنها منتهية.
+                </div>
+                {% else %}
+                <form method="POST">
+                    {{ item_form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ item_form.item_id.label(class="form-label") }}
+                        {{ item_form.item_id(class="form-select") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ item_form.quantity.label(class="form-label") }}
+                        {{ item_form.quantity(class="form-control") }}
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        إضافة للفاتورة
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="table-wrap">
+                <table class="table text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الصنف</th>
+                            <th>الكمية</th>
+                            <th>سعر الوحدة</th>
+                            <th>الإجمالي</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for line in invoice.items %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ line.item.name }}</td>
+                            <td>{{ line.quantity }}</td>
+                            <td>{{ "%.2f"|format(line.sale_price or 0) }}</td>
+                            <td>{{ "%.2f"|format(line.line_total or 0) }}</td>
+
+                            <td>
+                                {% if not invoice.is_finalized %}
+                                <form method="POST" action="{{ url_for('delete_invoice_item', line_id=line.id) }}">
+                                    <button class="btn btn-sm btn-danger">حذف</button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted">مقفولة</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6">لا توجد أصناف بعد</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if invoice.notes %}
+            <div class="form-card mt-3">
+                <h6 class="section-title">ملاحظات</h6>
+                <p class="mb-0">{{ invoice.notes }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ product.item.name }} - بداية ستور{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="product-detail">
+            <div class="product-image-box">
+                <img src="{{ product.image_url or 'https://via.placeholder.com/500x400?text=Product' }}"
+                    alt="{{ product.item.name }}">
+            </div>
+
+            <div class="product-info-box">
+                <h1>{{ product.item.name }}</h1>
+                <div class="product-price large">{{ product.item.sale_price }} جنيه</div>
+
+                <p class="product-stock">
+                    {% if product.item.quantity > 0 %}
+                    متوفر بالمخزون: {{ product.item.quantity }}
+                    {% else %}
+                    غير متوفر حاليًا
+                    {% endif %}
+                </p>
+
+                <p>{{ product.description or product.short_description or "لا يوجد وصف لهذا المنتج" }}</p>
+
+                <form method="POST" action="/cart/add/{{ product.id }}">
+                    <button type="submit" class="btn-primary">أضف للسلة 🛒</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

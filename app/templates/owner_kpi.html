@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-head">
+        <h2>لوحة المالك المختصرة</h2>
+    </div>
+
+    <div class="analytics-grid">
+        <div class="stat-card">
+            <div class="stat-label">إجمالي المبيعات</div>
+            <div class="stat-value">{{ total_sales }} جنيه</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">عدد الطلبات</div>
+            <div class="stat-value">{{ total_orders }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">عدد الفواتير</div>
+            <div class="stat-value">{{ total_invoices }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">أصناف منخفضة المخزون</div>
+            <div class="stat-value">{{ low_stock_count }}</div>
+        </div>
+    </div>
+
+    <div class="analytics-row two-cols">
+        <div class="analytics-box">
+            <h3>أفضل عميل</h3>
+            {% if best_customer %}
+            <p>{{ best_customer[0] }}</p>
+            <p>{{ best_customer[1] }} جنيه</p>
+            {% else %}
+            <p>لا توجد بيانات</p>
+            {% endif %}
+        </div>
+
+        <div class="analytics-box">
+            <h3>أفضل منتج</h3>
+            {% if best_product %}
+            <p>{{ best_product[0] }}</p>
+            <p>{{ best_product[1] }} وحدة</p>
+            {% else %}
+            <p>لا توجد بيانات</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

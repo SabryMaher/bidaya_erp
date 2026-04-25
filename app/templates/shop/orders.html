@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-card">
+    <div class="page-head">
+        <h2>الطلبات 📦</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>رقم الطلب</th>
+                    <th>العميل</th>
+                    <th>الهاتف</th>
+                    <th>الحالة</th>
+                    <th>الإجمالي</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.customer_phone }}</td>
+                    <td>
+                        {% if order.status == "completed" %}
+                        <span class="badge bg-success">completed</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">pending</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.total_amount }} جنيه</td>
+                    <td class="actions-cell">
+                        <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-sm btn-primary">
+                            عرض
+                        </a>
+
+                        {% if order.invoice_id %}
+                        <a href="{{ url_for('order_invoice', order_id=order.id) }}" class="btn btn-sm btn-dark">
+                            عرض الفاتورة
+                        </a>
+                        {% endif %}
+
+                        {% if order.status != "completed" %}
+                        <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}"
+                            style="display:inline-block;">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                تنفيذ الطلب
+                            </button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">لا توجد طلبات</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

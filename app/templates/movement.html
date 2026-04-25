@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block title %}حركة المخزون{% endblock %}
+
+{% block content %}
+<h2 class="page-title">حركة المخزون</h2>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="soft-form">
+            <h5 class="section-title">تسجيل حركة جديدة</h5>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">الصنف</label>
+                    <select name="item_id" class="form-select" required>
+                        {% for item in items %}
+                        <option value="{{ item.id }}">
+                            {{ item.name }} (المتاح: {{ item.quantity }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">نوع الحركة</label>
+                    <select name="type" class="form-select" required>
+                        <option value="in">إضافة</option>
+                        <option value="out">صرف</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">الكمية</label>
+                    <input type="number" name="quantity" class="form-control" min="1" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">ملاحظة</label>
+                    <textarea name="note" class="form-control"></textarea>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">حفظ الحركة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="table-wrap">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h5 class="section-title mb-0">سجل الحركات</h5>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <form method="GET" class="d-flex gap-2 flex-wrap">
+                        <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="بحث باسم الصنف">
+
+                        <select name="movement_type" class="form-select">
+                            <option value="">كل الحركات</option>
+                            <option value="in" {% if movement_filter=="in" %}selected{% endif %}>إضافة</option>
+                            <option value="out" {% if movement_filter=="out" %}selected{% endif %}>صرف</option>
+                        </select>
+
+                        <button class="btn btn-primary" type="submit">بحث</button>
+                        <a href="{{ url_for('movement') }}" class="btn btn-secondary">إعادة ضبط</a>
+                    </form>
+
+                    <a href="{{ url_for('movement', q=q, movement_type=movement_filter, export='csv') }}"
+                        class="btn btn-success">
+                        <i class="bi bi-download"></i>
+                        تصدير CSV
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table text-center">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الصنف</th>
+                            <th>النوع</th>
+                            <th>الكمية</th>
+                            <th>ملاحظة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for movement in movements %}
+                        <tr>
+                            <td>{{ movement.id }}</td>
+                            <td>{{ movement.item.name }}</td>
+                            <td>
+                                {% if movement.movement_type == "in" %}
+                                <span class="badge-soft-success">إضافة</span>
+                                {% else %}
+                                <span class="badge-soft-danger">صرف</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ movement.quantity }}</td>
+                            <td>{{ movement.note or "-" }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-state">لا توجد حركات مطابقة</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

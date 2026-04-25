@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>تعديل المنتج</h2>
+
+<form method="POST">
+    <label>رابط الصورة</label>
+    <input type="text" name="image_url" value="{{ product.image_url }}">
+
+    <label>وصف مختصر</label>
+    <input type="text" name="short_description" value="{{ product.short_description }}">
+
+    <label>الوصف</label>
+    <textarea name="description">{{ product.description }}</textarea>
+
+    <button type="submit">حفظ</button>
+</form>
+{% endblock %}

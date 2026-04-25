@@ -1,0 +1,41 @@
+{% extends "shop/base.html" %}
+{% block title %}إتمام الطلب{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <h2>إتمام الطلب</h2>
+        </div>
+
+        <div class="checkout-layout">
+            <div class="checkout-box">
+                <form method="POST">
+                    <label>اسم العميل</label>
+                    <input type="text" name="name" required>
+
+                    <label>رقم الهاتف</label>
+                    <input type="text" name="phone" required>
+
+                    <button type="submit" class="btn-primary">تأكيد الطلب</button>
+                </form>
+            </div>
+
+            <div class="checkout-box">
+                <h3>ملخص الطلب</h3>
+                {% for row in products %}
+                <div class="checkout-row">
+                    <span>{{ row.product.item.name }} × {{ row.qty }}</span>
+                    <span>{{ row.total }} جنيه</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="checkout-row total">
+                    <span>الإجمالي</span>
+                    <span>{{ total }} جنيه</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

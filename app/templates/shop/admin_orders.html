@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="admin-orders-layout" style="display: block;">
+    <div class="admin-orders-content">
+        <div class="admin-orders-head">
+            <h1>الطلبات</h1>
+        </div>
+
+        <form method="GET" class="admin-orders-filters">
+            <select name="status" class="admin-filter-select" onchange="this.form.submit()">
+                <option value="">الكل</option>
+                <option value="pending" {% if status_filter=='pending' %}selected{% endif %}>قيد الانتظار</option>
+                <option value="confirmed" {% if status_filter=='confirmed' %}selected{% endif %}>تم التأكيد</option>
+                <option value="shipping" {% if status_filter=='shipping' %}selected{% endif %}>قيد التوصيل</option>
+                <option value="completed" {% if status_filter=='completed' %}selected{% endif %}>مكتمل</option>
+            </select>
+
+            <div class="admin-search-wrap">
+                <input type="text" name="q" value="{{ search }}" placeholder="بحث برقم الطلب أو اسم العميل..."
+                    class="admin-search-input">
+                <button type="submit" class="admin-search-btn">⌕</button>
+            </div>
+        </form>
+
+        <div class="admin-orders-table-wrap">
+            <table class="admin-orders-table">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>التاريخ</th>
+                        <th>العميل</th>
+                        <th>الإجمالي</th>
+                        <th>العمولة</th>
+                        <th>الحالة</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_number }}</td>
+                        <td>{{ order.created_at.strftime('%Y/%m/%d') }}</td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.total_amount }} جنيه</td>
+                        <td>
+                            <span
+                                class="payment-badge {% if order.payment_status == 'paid' %}paid{% else %}pending{% endif %}">
+                                {{ order.payment_status_label }}
+                            </span>
+                            {{ order.commission }} جنيه
+                        </td>
+                        <td>
+                            <span class="status-badge {{ order.status }}">
+                                {{ order.status_label }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin_order_detail', order_id=order.id) }}"
+                                class="view-order-btn">👁</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7">لا توجد طلبات</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
