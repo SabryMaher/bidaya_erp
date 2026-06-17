@@ -713,3 +713,40 @@ a {
     .hero-inner h1 { font-size: 42px; }
     .cart-total-box { flex-direction: column; gap: 20px; text-align: center; padding: 30px; }
 }
+
+/* Dark Mode Overrides */
+:root.dark-mode {
+    --bg-light: #111827;
+    --bg-card: #1f2937;
+    --text-dark: #f9fafb;
+    --text-gray: #9ca3af;
+    --border-color: #374151;
+    --primary-light: #374151;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+:root.dark-mode .shop-header { background: rgba(31, 41, 55, 0.85); }
+:root.dark-mode .action-btn { background: #374151; color: #f9fafb; border-color: #4b5563; }
+:root.dark-mode .action-btn:hover { border-color: var(--primary); color: var(--primary); background: #1f2937; }
+:root.dark-mode .btn-secondary { background: #374151; color: #f9fafb; border-color: #4b5563; }
+:root.dark-mode .btn-secondary:hover { border-color: var(--primary); color: var(--primary); background: #1f2937; }
+:root.dark-mode .cart-sidebar { background: #1f2937; }
+:root.dark-mode .cart-header { background: #1f2937; border-color: #374151; }
+:root.dark-mode .cart-footer { background: #111827; border-color: #374151; }
+:root.dark-mode .shop-footer { background: #111827; border-color: #374151; }
+:root.dark-mode .logo-text, :root.dark-mode .shop-footer .logo-text { color: #f9fafb !important; }
+:root.dark-mode .cart-close { background: #374151; color: #f9fafb; }
+:root.dark-mode .cart-close:hover { background: #4b5563; }
+:root.dark-mode .cart-table th { background: #374151; border-color: #4b5563; color: #d1d5db; }
+:root.dark-mode .cart-table td { border-color: #4b5563; }
+:root.dark-mode .product-img-box, :root.dark-mode .detail-image { background: #111827; }
+:root.dark-mode .detail-cat-badge { background: #374151; color: #fce7f3; }
+:root.dark-mode .category-card, :root.dark-mode .product-card { border-color: #374151; }
+:root.dark-mode .empty-box { background: #1f2937; }
+:root.dark-mode .filter-link:hover { background: #111827; color: #f9fafb; }
+:root.dark-mode .filter-link.active { background: #374151; color: #fce7f3; }
+:root.dark-mode .btn-outline { background: #1f2937; color: #f9fafb; border-color: #4b5563; }
+:root.dark-mode .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+:root.dark-mode .btn-outline-white:hover { background: #1f2937; color: #f9fafb; }
