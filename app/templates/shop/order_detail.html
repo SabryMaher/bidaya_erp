@@ -53,16 +53,16 @@
                     {% if order.status != "completed" %}
                     <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}"
                         style="display:inline-block;">
-                        <!-- <button type="submit" class="btn btn-sm btn-success">
+                        <button type="submit" class="btn btn-sm btn-success">
                             تنفيذ الطلب
-                        </button> -->
+                        </button>
                     </form>
                     {% endif %}
                 </td>
-                <td class="actions-cell">
-                    <!-- <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-sm btn-primary">
+                <!-- <td class="actions-cell">
+                    <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-sm btn-primary">
                         عرض
-                    </a> -->
+                    </a>
 
                     {% if order.invoice_id %}
                     <a href="{{ url_for('order_invoice', order_id=order.id) }}" class="btn btn-sm btn-dark">
@@ -70,7 +70,7 @@
                     </a>
                     {% endif %}
 
-                    <!-- {% if order.status != "completed" %}
+                    {% if order.status != "completed" %}
                     <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}"
                         style="display:inline-block;">
                         <button type="submit" class="btn btn-sm btn-success">
@@ -83,10 +83,10 @@
         </table>
     </div>
 
-    {% if order.status != "completed" %}
+    <!-- {% if order.status != "completed" %}
     <form method="POST" action="{{ url_for('complete_order', order_id=order.id) }}">
         <button type="submit" class="btn btn-success">تنفيذ الطلب</button>
     </form>
-    {% endif %}
+    {% endif %} -->
 </div>
 {% endblock %}

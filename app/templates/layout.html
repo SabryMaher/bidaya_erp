@@ -307,6 +307,10 @@
             <a class="nav-link {% if request.endpoint == 'items' %}active{% endif %}" href="{{ url_for('items') }}">
                 <i class="bi bi-box-seam"></i><span>الأصناف</span>
             </a>
+            <a class="nav-link {% if request.endpoint == 'movement' %}active{% endif %}"
+                href="{{ url_for('movement') }}">
+                <i class="bi bi-arrow-left-right"></i><span>حركة المخزون</span>
+            </a>
             <a class="nav-link {% if request.endpoint == 'invoices' %}active{% endif %}"
                 href="{{ url_for('invoices') }}">
                 <i class="bi bi-file-earmark-text"></i><span>فواتير البيع</span>
@@ -318,26 +322,22 @@
                 href="{{ url_for('alerts_page') }}">
                 <i class="bi bi-file-earmark-text"></i><span>التنبيهات</span>
             </a>
-            <a class="nav-link {% if request.endpoint == 'movement' %}active{% endif %}"
-                href="{{ url_for('movement') }}">
-                <i class="bi bi-arrow-left-right"></i><span>حركة المخزون</span>
-            </a>
             <a class="nav-link {% if request.endpoint == 'analytics' %}active{% endif %}"
                 href="{{ url_for('analytics') }}">
                 <i class="bi bi-graph-up"></i><span>تحليل البيانات</span>
             </a>
             <a class="nav-link {% if request.endpoint == 'owner_kpi' %}active{% endif %}"
                 href="{{ url_for('owner_kpi') }}">
-                <i class="bi bi-graph-up"></i><span>لوحة المالك</span>
+                <i class="bi bi-bar-chart-line"></i><span>لوحة المالك</span>
             </a>
             <a class="nav-link {% if request.endpoint == 'orders' or request.endpoint == 'admin_orders' %}active{% endif %}"
                 href="{{ url_for('orders') }}">
                 <i class="bi bi-cart-check"></i><span>طلبات المتجر</span>
             </a>
-            <a class="nav-link {% if request.endpoint == 'admin_products' %}active{% endif %}"
+            <!-- <a class="nav-link {% if request.endpoint == 'admin_products' %}active{% endif %}"
                 href="{{ url_for('admin_products') }}">
                 <i class="bi bi-box"></i><span>منتجات المتجر</span>
-            </a>
+            </a> -->
             <a class="nav-link" href="{{ url_for('shop_home') }}" target="_blank">
                 <i class="bi bi-shop"></i><span>زيارة المتجر</span>
             </a>
