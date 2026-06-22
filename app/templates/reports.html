@@ -7,16 +7,18 @@
     </div>
 
     <form method="GET" class="filter-form">
-        <div>
-            <label>من تاريخ</label>
-            <input type="date" name="date_from" value="{{ date_from }}">
+        <div class="date-filters">
+            <div class="filter-group">
+                <label>من تاريخ</label>
+                <input type="date" id="date_from" name="date_from" value="{{ date_from }}">
+            </div>
+            <p>
+            <div class="filter-group">
+                <label>إلى تاريخ</label>
+                <input type="date" id="date_to" name="date_to" value="{{ date_to }}">
+            </div>
+            </p>
         </div>
-
-        <div>
-            <label>إلى تاريخ</label>
-            <input type="date" name="date_to" value="{{ date_to }}">
-        </div>
-
         <div class="filter-actions">
             <button type="submit" class="btn btn-primary">تصفية</button>
             <a href="{{ url_for('reports') }}" class="btn btn-secondary">إعادة ضبط</a>
