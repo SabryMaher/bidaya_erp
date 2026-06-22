@@ -241,3 +241,44 @@
 .trend.down {
     color: #dc2626;
 }
+
+.filter-form {
+    display: flex;
+    gap: 16px;
+    align-items: end;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    background: #fff;
+    padding: 16px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.filter-form>div {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-form input[type="date"] {
+    width: 200px;
+    min-width: 200px;
+    height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.filter-form {
+    direction: rtl;
+}
+
+.filter-form input[type="date"] {
+    direction: rtl;
+    unicode-bidi: plaintext;
+}
