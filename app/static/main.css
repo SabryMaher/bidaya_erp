@@ -246,3 +246,29 @@
 .trend.down {
     color: #dc2626;
 }
+
+.filter-form {
+    display: flex;
+    gap: 24px;
+    /* دي المسافة بين الحقلين */
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.filter-group input {
+    height: 44px;
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}

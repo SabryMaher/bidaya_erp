@@ -583,6 +583,236 @@ a {
     box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
+/* Checkout Page */
+.checkout-page {
+    min-height: calc(100vh - 280px);
+    padding-top: 56px;
+    background:
+        linear-gradient(135deg, rgba(252, 231, 243, 0.55), rgba(238, 242, 255, 0.65) 45%, rgba(250, 250, 249, 1));
+}
+
+.checkout-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 32px;
+}
+
+.checkout-kicker {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(236, 72, 153, 0.12);
+    color: var(--primary-dark);
+    font-weight: 900;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.checkout-hero h2 {
+    margin: 0 0 10px;
+    font-size: 44px;
+    line-height: 1.2;
+    font-weight: 900;
+    color: var(--text-dark);
+}
+
+.checkout-hero p {
+    margin: 0;
+    color: var(--text-gray);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.checkout-hero-badge {
+    width: 130px;
+    min-width: 130px;
+    height: 130px;
+    border-radius: 30px;
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.checkout-hero-badge span {
+    font-size: 30px;
+}
+
+.checkout-hero-badge strong {
+    font-size: 34px;
+    line-height: 1;
+    color: var(--primary);
+}
+
+.checkout-hero-badge small {
+    color: var(--text-gray);
+    font-weight: 800;
+}
+
+.checkout-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+    gap: 28px;
+    align-items: start;
+}
+
+.checkout-box {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(255,255,255,0.85);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 30px;
+}
+
+.checkout-form-card {
+    min-height: 100%;
+}
+
+.checkout-summary-card {
+    position: sticky;
+    top: 104px;
+}
+
+.checkout-card-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.checkout-card-head h3 {
+    margin: 0 0 4px;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.checkout-card-head p {
+    margin: 0;
+    color: var(--text-gray);
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.checkout-step {
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+    background: var(--primary-gradient);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 8px 20px rgba(236, 72, 153, 0.25);
+}
+
+.checkout-form {
+    display: grid;
+    gap: 18px;
+}
+
+.form-field {
+    display: grid;
+    gap: 8px;
+    color: var(--text-dark);
+    font-weight: 900;
+}
+
+.form-field input {
+    width: 100%;
+    height: 56px;
+    border: 2px solid transparent;
+    border-radius: var(--radius-md);
+    background: #f9fafb;
+    color: var(--text-dark);
+    padding: 0 16px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    outline: none;
+    transition: var(--transition);
+}
+
+.form-field input:focus {
+    background: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.12);
+}
+
+.form-field input::placeholder {
+    color: #9ca3af;
+}
+
+.checkout-submit {
+    width: 100%;
+    margin-top: 8px;
+    height: 58px;
+    font-size: 18px;
+}
+
+.checkout-items {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.checkout-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    background: #f9fafb;
+    color: var(--text-dark);
+}
+
+.checkout-row small {
+    display: block;
+    margin-top: 5px;
+    color: var(--text-gray);
+    font-weight: 700;
+}
+
+.checkout-product-name {
+    display: block;
+    font-weight: 900;
+    line-height: 1.5;
+}
+
+.checkout-row strong {
+    white-space: nowrap;
+    color: var(--primary-dark);
+    font-size: 16px;
+}
+
+.checkout-row.total {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: 900;
+    box-shadow: 0 10px 24px rgba(236, 72, 153, 0.22);
+}
+
+.checkout-row.total strong {
+    color: white;
+    font-size: 24px;
+}
+
+.checkout-empty {
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+}
+
 
 /* Slide Out Cart Sidebar */
 .cart-overlay {
@@ -703,6 +933,8 @@ a {
 /* Responsiveness */
 @media (max-width: 1000px) {
     .shop-layout { grid-template-columns: 1fr; }
+    .checkout-layout { grid-template-columns: 1fr; }
+    .checkout-summary-card { position: static; }
     .filters-box { position: static; margin-bottom: 30px; }
     .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }
@@ -712,6 +944,13 @@ a {
     .hero { padding: 80px 0; }
     .hero-inner h1 { font-size: 42px; }
     .cart-total-box { flex-direction: column; gap: 20px; text-align: center; padding: 30px; }
+    .checkout-page { padding-top: 36px; }
+    .checkout-hero { flex-direction: column; text-align: center; }
+    .checkout-hero h2 { font-size: 34px; }
+    .checkout-hero p { font-size: 16px; }
+    .checkout-box { padding: 22px; }
+    .checkout-card-head { align-items: flex-start; text-align: right; }
+    .checkout-row { align-items: flex-start; }
 }
 
 /* Dark Mode Overrides */
@@ -750,3 +989,9 @@ a {
 :root.dark-mode .btn-outline { background: #1f2937; color: #f9fafb; border-color: #4b5563; }
 :root.dark-mode .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
 :root.dark-mode .btn-outline-white:hover { background: #1f2937; color: #f9fafb; }
+:root.dark-mode .checkout-page { background: linear-gradient(135deg, rgba(31, 41, 55, 1), rgba(17, 24, 39, 1)); }
+:root.dark-mode .checkout-box,
+:root.dark-mode .checkout-hero-badge { background: #1f2937; border-color: #374151; }
+:root.dark-mode .form-field input,
+:root.dark-mode .checkout-row { background: #111827; }
+:root.dark-mode .form-field input:focus { background: #111827; }
