@@ -2,40 +2,80 @@
 {% block title %}إتمام الطلب{% endblock %}
 
 {% block content %}
-<section class="section">
+<section class="section checkout-page">
     <div class="container">
-        <div class="section-head">
-            <h2>إتمام الطلب</h2>
+        <div class="checkout-hero">
+            <div>
+                <span class="checkout-kicker">خطوة أخيرة</span>
+                <h2>إتمام الطلب</h2>
+                <p>اكتب بيانات التواصل وسنؤكد طلبك في أقرب وقت.</p>
+            </div>
+            <div class="checkout-hero-badge">
+                <span>🛒</span>
+                <strong>{{ products|length }}</strong>
+                <small>منتجات</small>
+            </div>
         </div>
 
+        {% if products %}
         <div class="checkout-layout">
-            <div class="checkout-box">
-                <form method="POST">
-                    <label>اسم العميل</label>
-                    <input type="text" name="name" required>
+            <div class="checkout-box checkout-form-card">
+                <div class="checkout-card-head">
+                    <span class="checkout-step">1</span>
+                    <div>
+                        <h3>بيانات العميل</h3>
+                        <p>سنستخدمها للتواصل وتأكيد تفاصيل الطلب.</p>
+                    </div>
+                </div>
 
-                    <label>رقم الهاتف</label>
-                    <input type="text" name="phone" required>
+                <form method="POST" class="checkout-form">
+                    <label class="form-field">
+                        <span>اسم العميل</span>
+                        <input type="text" name="name" placeholder="مثال: أحمد محمد" required>
+                    </label>
 
-                    <button type="submit" class="btn-primary">تأكيد الطلب</button>
+                    <label class="form-field">
+                        <span>رقم الهاتف</span>
+                        <input type="tel" name="phone" placeholder="01XXXXXXXXX" required>
+                    </label>
+
+                    <button type="submit" class="btn-primary checkout-submit">تأكيد الطلب</button>
                 </form>
             </div>
 
-            <div class="checkout-box">
-                <h3>ملخص الطلب</h3>
-                {% for row in products %}
-                <div class="checkout-row">
-                    <span>{{ row.product.item.name }} × {{ row.qty }}</span>
-                    <span>{{ row.total }} جنيه</span>
+            <aside class="checkout-box checkout-summary-card">
+                <div class="checkout-card-head">
+                    <span class="checkout-step">2</span>
+                    <div>
+                        <h3>ملخص الطلب</h3>
+                        <p>راجع المنتجات قبل التأكيد.</p>
+                    </div>
                 </div>
-                {% endfor %}
-                <hr>
+
+                <div class="checkout-items">
+                    {% for row in products %}
+                    <div class="checkout-row">
+                        <div>
+                            <span class="checkout-product-name">{{ row.product.item.name }}</span>
+                            <small>الكمية: {{ row.qty }}</small>
+                        </div>
+                        <strong>{{ row.total }} جنيه</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+
                 <div class="checkout-row total">
                     <span>الإجمالي</span>
-                    <span>{{ total }} جنيه</span>
+                    <strong>{{ total }} جنيه</strong>
                 </div>
-            </div>
+            </aside>
         </div>
+        {% else %}
+        <div class="empty-box checkout-empty">
+            السلة فارغة
+            <a href="{{ url_for('shop_products') }}" class="btn-primary">تصفح المنتجات</a>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

@@ -641,26 +641,33 @@ def register_routes(app):
 
         session["cart"] = cart
         return redirect(url_for("shop_products"))
-    
+
     @app.route("/cart")
     def view_cart():
         cart = session.get("cart", {})
         products = []
-
         total = 0
 
         for product_id, qty in cart.items():
             product = Product.query.get(int(product_id))
             if product:
+                price = product.item.sale_price if product.item else 0
+
                 products.append({
                     "product": product,
                     "qty": qty,
-                    "total": qty * (product.item.sale_price if product.item else 0)
+                    "total": qty * price
                 })
-                total += qty * (product.item.sale_price if product.item else 0)
 
-        return render_template("shop/cart.html", products=products, total=total)
-    
+                total += qty * price
+
+        return render_template(
+            "shop/cart.html",
+            products=products,
+            total=total
+        )
+
+
     @app.route("/checkout", methods=["GET", "POST"])
     def checkout():
         if request.method == "POST":
@@ -705,8 +712,30 @@ def register_routes(app):
 
             return redirect(url_for("order_success", order_number=order.order_number))
 
-        return render_template("shop/checkout.html")
+        # تجهيز بيانات السلة لعرض ملخص الطلب
+        cart = session.get("cart", {})
+        products = []
+        total = 0
 
+        for product_id, qty in cart.items():
+            product = Product.query.get(int(product_id))
+            if product:
+                price = product.item.sale_price if product.item else 0
+
+                products.append({
+                    "product": product,
+                    "qty": qty,
+                    "total": qty * price
+                })
+
+                total += qty * price
+
+        return render_template(
+            "shop/checkout.html",
+            products=products,
+            total=total
+        )
+        
     @app.route("/orders")
     @login_required
     def orders():
