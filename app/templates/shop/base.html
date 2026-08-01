@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='shop.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='shop_orders.css') }}">
 </head>
+
 <body>
 
     <header class="shop-header">
@@ -19,8 +21,10 @@
 
             <!-- Middle: Navigation -->
             <nav class="shop-nav">
-                <a href="{{ url_for('shop_home') }}" class="{% if request.endpoint == 'shop_home' %}active{% endif %}">الرئيسية</a>
-                <a href="{{ url_for('shop_products') }}" class="{% if request.endpoint == 'shop_products' and not request.args.get('category') %}active{% endif %}">المنتجات</a>
+                <a href="{{ url_for('shop_home') }}"
+                    class="{% if request.endpoint == 'shop_home' %}active{% endif %}">الرئيسية</a>
+                <a href="{{ url_for('shop_products') }}"
+                    class="{% if request.endpoint == 'shop_products' and not request.args.get('category') %}active{% endif %}">المنتجات</a>
                 <a href="{{ url_for('shop_products', category='stationery') }}">المكتبة</a>
                 <a href="{{ url_for('shop_products', category='chicken') }}">الفراخ</a>
                 <a href="{{ url_for('shop_products', category='feeds') }}">الأعلاف</a>
@@ -28,9 +32,9 @@
 
             <!-- Left: Actions -->
             <div class="header-actions">
-                <button class="action-btn" title="تغيير المظهر">☀️</button>
+                <!-- <button class="action-btn" title="تغيير المظهر">☀️</button> -->
                 <button class="action-btn" onclick="toggleCart()" title="سلة التسوق">🛒</button>
-                
+
                 {% if current_user.is_authenticated %}
                 <a href="{{ url_for('dashboard') }}" class="action-btn" title="لوحة التحكم">⚙️</a>
                 {% endif %}
@@ -59,21 +63,21 @@
             <h2>سلة التسوق</h2>
             <button class="cart-close" onclick="toggleCart()">✖</button>
         </div>
-        
+
         <div class="cart-body">
             {% set cart = session.get('cart', {}) %}
             {% if cart %}
-                <!-- Note: Proper Cartesian data fetching requires context processor or route loading, 
+            <!-- Note: Proper Cartesian data fetching requires context processor or route loading, 
                      so for now we redirect immediately on complex items or keep it simple!
                      Typically, we navigate to /cart if it's too complex or we build a template snippet. -->
-                <div style="text-align:center; margin-top:20px;">
-                    <a href="{{ url_for('view_cart') }}" class="btn-gradient">عرض السلة ({{ cart|length }} منتج)</a>
-                </div>
+            <div style="text-align:center; margin-top:20px;">
+                <a href="{{ url_for('view_cart') }}" class="btn-gradient">عرض السلة ({{ cart|length }} منتج)</a>
+            </div>
             {% else %}
-                <div style="text-align:center; margin-top:40px; color:#6b7280;">السلة فارغة</div>
+            <div style="text-align:center; margin-top:40px; color:#6b7280;">السلة فارغة</div>
             {% endif %}
         </div>
-        
+
         <div class="cart-footer">
             <a href="{{ url_for('checkout') }}" class="btn-gradient">إتمام الطلب</a>
         </div>
@@ -85,4 +89,5 @@
         }
     </script>
 </body>
+
 </html>
